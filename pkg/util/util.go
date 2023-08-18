@@ -27,12 +27,12 @@ import (
 )
 
 const (
-	VCoreAnnotation         = "ecnf.io/vcuda-core"
-	VMemoryAnnotation       = "ecnf.io/vcuda-memory"
-	PredicateTimeAnnotation = "ecnf.io/predicate-time"
-	PredicateGPUIndexPrefix = "ecnf.io/predicate-gpu-idx-"
-	PredicateNode           = "ecnf.io/predicate-node"
-	GPUAssigned             = "ecnf.io/gpu-assigned"
+	VCoreAnnotation         = "tencent.com/vcuda-core"
+	VMemoryAnnotation       = "tencent.com/vcuda-memory"
+	PredicateTimeAnnotation = "tencent.com/predicate-time"
+	PredicateGPUIndexPrefix = "tencent.com/predicate-gpu-idx-"
+	PredicateNode           = "tencent.com/predicate-node"
+	GPUAssigned             = "tencent.com/gpu-assigned"
 	HundredCore             = 100
 )
 

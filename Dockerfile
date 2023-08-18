@@ -20,9 +20,6 @@ RUN echo '%_topdir /root/rpmbuild' > /root/.rpmmacros \
           && echo '%__os_install_post %{nil}' >> /root/.rpmmacros \
                   && echo '%debug_package %{nil}' >> /root/.rpmmacros
 WORKDIR /root/rpmbuild/SPECS
-
-RUN go env -w GOPROXY="https://goproxy.cn,direct"
-
 RUN rpmbuild -ba --quiet \
   --define 'version '${version}'' \
   --define 'commit '${commit}'' \
