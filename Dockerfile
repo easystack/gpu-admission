@@ -2,11 +2,12 @@ FROM centos:7 as build
 
 ARG version
 ARG commit
+ARG TARGETARCH
 
 RUN yum install -y rpm-build make
 
 ENV GOLANG_VERSION 1.13.4
-RUN curl -sSL https://dl.google.com/go/go${GOLANG_VERSION}.linux-amd64.tar.gz \
+RUN curl -sSL https://dl.google.com/go/go${GOLANG_VERSION}.linux-${TARGETARCH}.tar.gz \
     | tar -C /usr/local -xz
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
@@ -21,7 +22,7 @@ RUN echo '%_topdir /root/rpmbuild' > /root/.rpmmacros \
                   && echo '%debug_package %{nil}' >> /root/.rpmmacros
 WORKDIR /root/rpmbuild/SPECS
 
-RUN go env -w GOPROXY="https://goproxy.cn,direct"
+RUN go env -w GOPROXY="https://goproxy.io,direct"
 
 RUN rpmbuild -ba --quiet \
   --define 'version '${version}'' \
@@ -33,10 +34,11 @@ FROM centos:7
 
 ARG version
 ARG commit
+ARG arch
 
-COPY --from=build /root/rpmbuild/RPMS/x86_64/gpu-admission-${version}-${commit}.el7.x86_64.rpm /tmp
+COPY --from=build /root/rpmbuild/RPMS/${arch}/gpu-admission-${version}-${commit}.el7.${arch}.rpm /tmp
 
-RUN rpm -ivh /tmp/gpu-admission-${version}-${commit}.el7.x86_64.rpm
+RUN rpm -ivh /tmp/gpu-admission-${version}-${commit}.el7.${arch}.rpm
 
 EXPOSE 3456
 
