@@ -6,9 +6,10 @@ set -o nounset
 set -o pipefail
 
 GITCOMMIT=$(git log --oneline|wc -l|sed -e 's/^[ \t]*//')
-VERSION=${VERSION:-unknown}  # MUST modify it for every branch!
+VERSION=${VERSION:-"1.1.6"}  # MUST modify it for every branch!
 ROOT=$(dirname "${BASH_SOURCE}")/..
-IMAGE=${IMAGE:-"gpu-admission-${VERSION}:${GITCOMMIT}"}
+IMAGE=${IMAGE:-"hub.easystack.cn/production/gpu-admission"}
+IMAGE_TAG=${IMAGE_TAG:-"v1.1.6-es"}
 GIT_VERSION_FILE="${ROOT}/.version-defs"
 
 readonly LOCAL_OUTPUT_ROOT="${ROOT}/${OUT_DIR:-_output}"
@@ -58,12 +59,21 @@ function api::build::prepare_build() {
 }
 
 function api::build::generate() {
+  readonly local arch=$(uname -m)
+  local TARGETARCH="amd64"
+
+  if [ ${arch} == "aarch64" ]; then
+    TARGETARCH="arm64"
+  fi
+
   api::log::status "Generating image..."
   (
     cd "${LOCAL_OUTPUT_ROOT}"
-    docker build -t $IMAGE \
+    docker build -t ${IMAGE}:${IMAGE_TAG} \
       --build-arg version=${VERSION} \
       --build-arg commit=${GITCOMMIT} \
+      --build-arg arch=${arch} \
+      --build-arg TARGETARCH=${TARGETARCH} \
       .
   )
 }
